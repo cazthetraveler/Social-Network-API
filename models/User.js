@@ -6,13 +6,13 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-      trim: true
+      trim: true,
     },
     email: {
       type: String,
       required: true,
       unique: true,
-      match: [/^[a-zA-Z0-9._-]+@[a-zA-Z]{2, 4}$/], //validates email criteria using regex
+      match: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, //validates email criteria using regex
     },
     thoughts: Array,
     friends: Array,
