@@ -1,50 +1,48 @@
 const { Schema, Types, model } = require("mongoose");
 
-const reactionSchema = new Schema(
-    {
-        reactionId: {
-            type: Schema.Types.ObjectId,
-            default: () => new Types.ObjectId()
-        },
-        reactionBody: {
-            type: String,
-            required: true,
-            maxLength: 280
-        },
-        username: {
-            type: String,
-            required: true
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now,
-            get: function(timestamp) {
-                return formatDate(timestamp);
-            }
-        }
-    }
-);
+const reactionSchema = new Schema({
+  reactionId: {
+    type: Schema.Types.ObjectId,
+    default: () => new Types.ObjectId(),
+  },
+  reactionBody: {
+    type: String,
+    required: true,
+    maxLength: 280,
+  },
+  username: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    get: function (timestamp) {
+      return formatDate(timestamp);
+    },
+  },
+});
 
 const thoughtSchema = new Schema(
   {
     thoughtText: {
-        type: String,
-        required: true,
-        minLength: 1,
-        maxLength: 280
+      type: String,
+      required: true,
+      minLength: 1,
+      maxLength: 280,
     },
     createdAt: {
-        type: Date,
-        default: Date.now, //use getter method to format date
-        get: function(timestamp) {
-            return formatDate(timestamp);
-        }
+      type: Date,
+      default: Date.now, //use getter method to format date
+      get: function (timestamp) {
+        return formatDate(timestamp);
+      },
     },
     username: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
-    reactions: reactionSchema,
+    reactions: [reactionSchema],
   },
   {
     toJSON: {
@@ -55,12 +53,12 @@ const thoughtSchema = new Schema(
 );
 
 thoughtSchema.virtual("reactionCount").get(function () {
-    return this.reactions.length;
+  return this.reactions.length;
 });
 
 function formatDate(date) {
-    return date.toLocaleString("en-us", {timeZone: "UTC"});
-};
+  return date.toLocaleString("en-us", { timeZone: "UTC" });
+}
 
 const Thought = model("thought", thoughtSchema);
 
