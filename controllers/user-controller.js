@@ -70,7 +70,7 @@ module.exports = {
   },
   //add a friend
   async addFriend(req, res) {
-    const { friendId } = req.body;
+    const { friendId } = req.params;
     try {
       const user = await User.findOneAndUpdate(
         { _id: req.params.userId },
@@ -85,6 +85,7 @@ module.exports = {
       res.json(user);
     } catch (error) {
       res.status(500).json(error);
+      console.error(error);
     }
   },
   //remove a friend
@@ -94,7 +95,7 @@ module.exports = {
         { _id: req.params.userId },
         { $pull: { friends: req.params.friendId } },
         { new: true }
-      ).populate("friends");
+      );
 
       if (!user) {
         return res.status(400).json({ message: "No user found!! dingbat" });

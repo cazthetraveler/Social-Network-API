@@ -14,8 +14,8 @@ const userSchema = new Schema(
       unique: true,
       match: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, //validates email criteria using regex
     },
-    thoughts: Array,
-    friends: Array,
+    thoughts: [{ type: Schema.Types.ObjectId, ref: "thought" }],
+    friends: [{ type: Schema.Types.ObjectId, ref: "user" }],
   },
   {
     toJSON: {
