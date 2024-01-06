@@ -79,25 +79,43 @@ module.exports = {
   //create a new reaction
   async createReaction(req, res) {
     try {
-      const dbThoughtData = await Thought.create(req.body);
-      res.json(dbThoughtData);
+      const reaction = {
+        reactionBody: req.body.reactionBody,
+        username: req.body.username,
+      };
+      const thought = await Thought.findById(req.params.thoughtId);
+      if (!thought) {
+        return res.status(404).json({ message: "No thought found!! dingbat" });
+      }
+
+      thought.reactions.push(reaction);
+
+      const updateThought = await thought.save();
+      res.json(updateThought);
     } catch (error) {
       res.status(500).json(error);
+      console.error(error);
     }
   },
   //delete a reaction
   async deleteReaction(req, res) {
     try {
-      const reaction = await Thought.findOneAndDelete({
-        _id: req.params.reactionId,
-      });
-      if (!reaction) {
-        return res.status(404).json({ message: "No reaction found!! dingbat" });
+      const { thoughtId } = req.params;
+      const { reactionId } = req.body;
+
+      const thought = await Thought.findById(thoughtId);
+      if (!thought) {
+        return res.status(404).json({ message: "No thought found!! dingbat" });
       }
 
-      res.json({ message: "Reaction successfully deleted!!" });
+      thought.reactions.pull(reactionId);
+
+      const updateThought = await thought.save();
+
+      res.json(updateThought);
     } catch (error) {
       res.status(500).json(error);
+      console.error(error);
     }
   },
 };
